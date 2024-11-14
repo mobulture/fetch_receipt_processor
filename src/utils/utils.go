@@ -115,6 +115,5 @@ func calculatePoints(receipt types.Receipt) (int){
 	points+= pointsFromTotal(total)
 	points+= pointsFromTime(timeString)
 	points+= pointsFromItems(items)
-	log.Println("Receipt generated:",points)
 	return points
 }
