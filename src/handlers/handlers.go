@@ -8,6 +8,7 @@ import (
  "bytes"
  "github.com/google/uuid"
  "fetch_receipt_processor/src/types"
+ "fetch_receipt_processor/src/cache"
 )
 
 
@@ -15,9 +16,15 @@ import (
 func generateUUID(receipt types.Receipt) (string, error) {
 	data, err := json.Marshal(receipt)
 	namespace := uuid.NameSpaceURL
-	newUUID := uuid.NewSHA1(namespace, data)
-	log.Println(newUUID)
-	return newUUID.String(), err
+	UUID := uuid.NewSHA1(namespace, data).String()
+	log.Println(UUID)
+	_,exists := cache.Get(UUID)
+	if exists == true {
+		log.Println("Receipt already has existing UUID, returning previously created UUID")
+	} else {
+		cache.Set(UUID,receipt)
+	}
+	return UUID, err
 }
 
 func PostReceipt(w http.ResponseWriter, r *http.Request) {
