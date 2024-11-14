@@ -1,24 +1,22 @@
 package types
 
 type Item struct {
-	ShortDescription string 
-	Price            string 
+	ShortDescription string
+	Price            string
 }
 
 type Receipt struct {
-	Retailer    string  
-	PurchaseDate string  
-	PurchaseTime string  
-	Items       []Item  
-	Total       string  
-	Points 		int 
+	Retailer     string
+	PurchaseDate string
+	PurchaseTime string
+	Items        []Item
+	Total        string
+	Points       int
 }
-
 
 type MemoryCache struct {
-    data map[string]string
+	data map[string]string
 }
-
 
 func newMemoryCache() *MemoryCache {
 	return &MemoryCache{
@@ -27,11 +25,10 @@ func newMemoryCache() *MemoryCache {
 }
 
 func (cache *MemoryCache) Set(key, value string) {
-    cache.data[key] = value
+	cache.data[key] = value
 }
 
 func (cache *MemoryCache) Get(key string) (string, bool) {
-    val, exists := cache.data[key]
-    return val, exists
+	val, exists := cache.data[key]
+	return val, exists
 }
-
