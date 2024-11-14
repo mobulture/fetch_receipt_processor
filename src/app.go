@@ -14,7 +14,7 @@ func main() {
 	cache.InitCache()
 	log.Println("Starting server")
 	port:= ":8080"
-	err= http.ListenAndServe(port,router)
+	err:= http.ListenAndServe(port,router)
 	if err != nil {
 		log.Println(port, "is already in use")
 	}
