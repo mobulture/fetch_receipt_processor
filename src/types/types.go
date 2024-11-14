@@ -11,6 +11,7 @@ type Receipt struct {
 	PurchaseTime string  
 	Items       []Item  
 	Total       string  
+	Points 		int 
 }
 
 

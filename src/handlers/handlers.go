@@ -6,48 +6,36 @@ import (
  "log"
  "io"
  "bytes"
- "github.com/google/uuid"
+ "github.com/gorilla/mux"
  "fetch_receipt_processor/src/types"
  "fetch_receipt_processor/src/cache"
+ "fetch_receipt_processor/src/utils"
 )
 
 
 
-func generateUUID(receipt types.Receipt) (string, error) {
-	data, err := json.Marshal(receipt)
-	namespace := uuid.NameSpaceURL
-	UUID := uuid.NewSHA1(namespace, data).String()
-	log.Println(UUID)
-	_,exists := cache.Get(UUID)
-	if exists == true {
-		log.Println("Receipt already has existing UUID, returning previously created UUID")
-	} else {
-		cache.Set(UUID,receipt)
-	}
-	return UUID, err
-}
-
 func PostReceipt(w http.ResponseWriter, r *http.Request) {
  w.Header().Set("Content-Type", "application/json")
- log.Println("In post receipt")
-
+ log.Println("Received postReceipt request")
  body, err := io.ReadAll(r.Body)
  if err != nil {
 	 http.Error(w, "Unable to read request body", http.StatusInternalServerError)
 	 return
  }
 
- log.Println("Received request body:", string(body))
- 
  r.Body = io.NopCloser(bytes.NewBuffer(body))
 
  var receipt types.Receipt
  decoder := json.NewDecoder(r.Body)
  err = decoder.Decode(&receipt)
- var UUID string
- UUID,err = generateUUID(receipt)
+ UUID,err := utils.GenerateUUID(receipt) // if we create the UUID before points are calculated it should be fine 
  if err != nil {
-	http.Error(w, "Invalid ", http.StatusBadRequest)
+	http.Error(w, "Could not generate ID", http.StatusBadRequest)
+	errorResponse := map[string]string{
+		"error": "Could not generate ID",
+		"status": "400",
+	}
+	json.NewEncoder(w).Encode(errorResponse)
 	return
 }
  response := map[string]interface{}{
@@ -58,10 +46,21 @@ func PostReceipt(w http.ResponseWriter, r *http.Request) {
 
 func GetPoints(w http.ResponseWriter, r *http.Request){
 	w.Header().Set("Content-Type", "application/json")
-	log.Println("in get points")
+	vars := mux.Vars(r)
+	id := vars["id"]
+	receipt, exists := cache.Get(id)
+	if exists == false {
+		http.Error(w, "ID not in cache ", http.StatusBadRequest)
+		errorResponse := map[string]string{
+			"error": "ID not found in cache",
+			"status": "400",
+		}
+	    json.NewEncoder(w).Encode(errorResponse)
+		return 
+	}
+	log.Println("Found corresponding receipt to id",id)
 	response := map[string]interface{}{
-		"Points": 2023,
+		"Points": receipt.Points,
 	}
 	json.NewEncoder(w).Encode(response)
-
 }
