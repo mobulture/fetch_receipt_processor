@@ -1,5 +1,8 @@
-# How to Run
+# Fetch takehome
 
+Hello, my name is Eli, here is a repository holding code to run an api in the specification of the Fetch takehome assessment. I coded this using Go, as it seems to be the primary language of the Fetch team, I actually do not have Go experience, so I spent longer than I would normally on this project to learn about the syntax,tools and other intricacies behind Go. I did end up learning a lot due to this! I tried to learn about common file/naming/coding conventions, but since I am new to Go i may not have them all down.
+
+# How to Run
 
 I decided to both code this in Go and decided to Dockerize the application. You can run the application in both ways
 
