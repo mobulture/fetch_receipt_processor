@@ -80,7 +80,7 @@ func TestUUIDGen (t *testing.T){
 	log.Println("ID:", postResponse.ID)
 	secondID := postResponse.ID
 
-	// Asserts that they are both not equal
+	// Asserts that they are both not equal to test unique generation
 	assert.NotEqual(t, firstID, secondID, "Generated UUIDs should not be equal")
 
 }

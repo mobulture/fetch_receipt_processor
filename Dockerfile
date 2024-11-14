@@ -1,12 +1,11 @@
-FROM golang:1.21
-
-# Expose the port that the application listens on.
-WORKDIR /src
-
-COPY . . 
+FROM golang:1.23
+ 
+WORKDIR /app
+ 
+COPY . .
+ 
+RUN go build -o fetch_receipt_processor ./src
 
 EXPOSE 8080
-
-RUN go build . 
-
-CMD ["./src"]
+ 
+CMD ["./fetch_receipt_processor"]
